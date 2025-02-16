@@ -1,0 +1,12 @@
+[package]
+name = "add_move_benchmark"
+version = "1.0.0"
+authors = []
+
+[addresses]
+address_move = "_"
+
+[dev-addresses]
+
+[dependencies]
+AptosFramework = { local = "/Users/shgh/Work/master-thesis/aptos-core/aptos-move/framework/aptos-framework" }
