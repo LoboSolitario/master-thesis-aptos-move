@@ -197,6 +197,8 @@ def track_opcode_coverage(opcode_stats):
         if 'Type' in all_opcodes_df.columns:
             print("\nMissing opcodes by type:")
             missing_df = coverage_df[coverage_df['Status'] == 'Missing']
+            # Sort missing_df by Type first, then by Opcode for consistent display
+            missing_df = missing_df.sort_values(by=['Type', 'Opcode'])
             for opcode_type in sorted(missing_df['Type'].unique()):
                 type_opcodes = missing_df[missing_df['Type'] == opcode_type]['Opcode'].tolist()
                 if type_opcodes:  # Only print if there are missing opcodes of this type
@@ -288,6 +290,61 @@ def generate_html_report(df, opcode_stats):
             });
             
             filterDiv.appendChild(statusFilter);
+            
+            // Add table sorting functionality
+            const table = document.querySelector('#coverageTable');
+            const headers = table.querySelectorAll('th');
+            
+            headers.forEach((header, index) => {
+                header.style.cursor = 'pointer';
+                header.setAttribute('data-sortable', 'true');
+                header.setAttribute('data-sort-direction', 'none');
+                header.addEventListener('click', () => {
+                    sortTable(table, index);
+                });
+                
+                // Add sort indicators
+                const span = document.createElement('span');
+                span.className = 'ms-1';
+                span.innerHTML = '↕';
+                header.appendChild(span);
+            });
+            
+            function sortTable(table, columnIndex) {
+                const header = headers[columnIndex];
+                const direction = header.getAttribute('data-sort-direction');
+                const newDirection = direction === 'asc' ? 'desc' : 'asc';
+                
+                // Reset all headers
+                headers.forEach(h => {
+                    h.setAttribute('data-sort-direction', 'none');
+                    h.querySelector('span').innerHTML = '↕';
+                });
+                
+                // Set new direction and indicator
+                header.setAttribute('data-sort-direction', newDirection);
+                header.querySelector('span').innerHTML = newDirection === 'asc' ? '↑' : '↓';
+                
+                // Get rows and sort
+                const tbody = table.querySelector('tbody');
+                const rows = Array.from(tbody.querySelectorAll('tr'));
+                
+                const sortedRows = rows.sort((a, b) => {
+                    const aVal = a.cells[columnIndex].textContent.trim();
+                    const bVal = b.cells[columnIndex].textContent.trim();
+                    
+                    return newDirection === 'asc' 
+                        ? aVal.localeCompare(bVal) 
+                        : bVal.localeCompare(aVal);
+                });
+                
+                // Clear and append rows
+                while (tbody.firstChild) {
+                    tbody.removeChild(tbody.firstChild);
+                }
+                
+                sortedRows.forEach(row => tbody.appendChild(row));
+            }
             
             const tableContainer = document.querySelector('#coverageTable').parentNode;
             tableContainer.insertBefore(searchInput, document.querySelector('#coverageTable'));
@@ -465,6 +522,8 @@ def generate_coverage_rows():
     
     try:
         coverage_df = pd.read_csv(coverage_path)
+        # Sort the dataframe by Type column first, then by Opcode
+        coverage_df = coverage_df.sort_values(by=['Type', 'Opcode'])
         rows = []
         
         for _, row in coverage_df.iterrows():

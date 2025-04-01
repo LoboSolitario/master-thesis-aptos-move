@@ -7,6 +7,12 @@ module address_move::opcode_benchmark {
         vec: vector<u64>,
     }
 
+    // Add struct for unpack_ref benchmark
+    struct UnpackStruct has key, store, copy, drop {
+        f: u64,
+        g: u64
+    }
+
     // Add cast counter storage to track operations
     struct CastStorage has key {
         u8_cast_result: u8,
@@ -25,14 +31,16 @@ module address_move::opcode_benchmark {
 
     // Initialize storage for benchmarking
     public entry fun initialize(account: &signer) {
-        if (!exists<Storage>(signer::address_of(account))) {
+        let addr = signer::address_of(account);
+        
+        if (!exists<Storage>(addr)) {
             move_to(account, Storage {
                 value: 0,
                 vec: vector::empty(),
             });
         };
         
-        if (!exists<CastStorage>(signer::address_of(account))) {
+        if (!exists<CastStorage>(addr)) {
             move_to(account, CastStorage {
                 u8_cast_result: 0,
                 u16_cast_result: 0,
@@ -43,10 +51,17 @@ module address_move::opcode_benchmark {
             });
         };
         
-        if (!exists<LiteralStorage>(signer::address_of(account))) {
+        if (!exists<LiteralStorage>(addr)) {
             move_to(account, LiteralStorage {
                 false_val: false,  // ld_false opcode
                 true_val: true    // ld_true opcode
+            });
+        };
+        
+        if (!exists<UnpackStruct>(addr)) {
+            move_to(account, UnpackStruct {
+                f: 42,
+                g: 84
             });
         }
     }
@@ -87,6 +102,15 @@ module address_move::opcode_benchmark {
     // Storage Operations Benchmark
     public entry fun benchmark_storage_ops(_account: &signer) acquires Storage {
         let addr = signer::address_of(_account);
+        
+        // First check if the resource exists to avoid the error
+        if (!exists<Storage>(addr)) {
+            // If it doesn't exist, create it first
+            move_to(_account, Storage {
+                value: 0,
+                vec: vector::empty(),
+            });
+        };
         
         // Read from global storage
         let storage = borrow_global_mut<Storage>(addr);
@@ -183,7 +207,7 @@ module address_move::opcode_benchmark {
         let _u8_to_u256 = (a_u8 as u256);
         
         // Cast u16 to other types
-        let _u16_to_u8 = (a_u16 as u8); // This would abort if a_u16 > 255
+        let _u16_to_u8 = ((a_u16 % 256) as u8); // Apply modulo to prevent abort
         let _u16_to_u32 = (a_u16 as u32);
         let _u16_to_u64 = (a_u16 as u64);
         let _u16_to_u128 = (a_u16 as u128);
@@ -234,47 +258,56 @@ module address_move::opcode_benchmark {
         let _load_u256 = b_u256;
     }
 
-    // Benchmark for ld_false, ld_true, and ld_const opcodes (with parameters)
-    public entry fun benchmark_constant_loads(
-        _account: &signer, 
-        false_val: bool, 
-        true_val: bool,
-        const_u8: u8,
-        const_u16: u16,
-        const_u32: u32,
-        const_u64: u64,
-        const_u128: u128,
-        const_u256: u256
-    ) {
-        // Use the values in a basic calculation to prevent compiler optimization
-        let _result_1 = if (false_val) { 1 } else { 0 };
-        let _result_2 = if (true_val) { 1 } else { 0 };
+    // Benchmark for unpack_ref opcode
+    public entry fun benchmark_unpack_ref(_account: &signer) {
+        // Create a struct instance
+        let s = UnpackStruct { f: 100, g: 200 };
         
-        let _sum = const_u8 + (const_u16 as u8) + (const_u32 as u8) + 
-                  (const_u64 as u8) + (const_u128 as u8) + (const_u256 as u8);
+        // Get a reference to the struct
+        let s_ref = &s;
+        
+        // Unpack the reference using pattern matching - this will use the unpack_ref opcode
+        let UnpackStruct { f, g } = s_ref;
+        
+        // Dereference the fields to ensure values are used
+        let _f_val = *f;
+        let _g_val = *g;
+        
+        // Perform the unpack_ref operation multiple times to make it visible in benchmarks
+        for (_i in 0..10) {
+            let UnpackStruct { f: f2, g: g2 } = s_ref;
+            let _sum = *f2 + *g2;
+        };
     }
-
-    // Benchmark for ld_false, ld_true, and ld_const opcodes (with literal constants)
-    public entry fun benchmark_constant_literals(_account: &signer) {
-        // ld_false opcode - explicitly using the false literal constant
-        let _false_val = false;
+    
+    // Benchmark for unpack_ref with global storage
+    public entry fun benchmark_unpack_ref_global(account: &signer) acquires UnpackStruct {
+        let addr = signer::address_of(account);
         
-        // ld_true opcode - explicitly using the true literal constant
-        let _true_val = true;
+        // First check if the resource exists to avoid the error
+        if (!exists<UnpackStruct>(addr)) {
+            // If it doesn't exist, create it first
+            move_to(account, UnpackStruct {
+                f: 42,
+                g: 84
+            });
+        };
         
-        // ld_const opcode - explicitly using literal numeric constants
-        let _const_u8: u8 = 42;
-        let _const_u16: u16 = 1000;
-        let _const_u32: u32 = 100000;
-        let _const_u64: u64 = 10000000;
-        let _const_u128: u128 = 10000000000;
-        let _const_u256: u256 = 10000000000000;
+        // Get a reference to the struct from global storage
+        let s_ref = borrow_global<UnpackStruct>(addr);
         
-        // Use the values in a basic calculation to prevent compiler optimization
-        let _result_1 = if (_false_val) { 1 } else { 0 };
-        let _result_2 = if (_true_val) { 1 } else { 0 };
+        // Unpack the reference using pattern matching
+        let UnpackStruct { f, g } = s_ref;
         
-        let _sum = _const_u8 + (_const_u16 as u8) + (_const_u32 as u8) + 
-                  (_const_u64 as u8) + (_const_u128 as u8) + (_const_u256 as u8);
+        // Dereference the fields to ensure values are used
+        let _f_val = *f;
+        let _g_val = *g;
+        
+        // Perform the unpack_ref operation multiple times to make it visible in benchmarks
+        for (_i in 0..10) {
+            let s_ref = borrow_global<UnpackStruct>(addr);
+            let UnpackStruct { f: f2, g: g2 } = s_ref;
+            let _sum = *f2 + *g2;
+        };
     }
 } 

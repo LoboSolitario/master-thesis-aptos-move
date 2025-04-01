@@ -66,7 +66,7 @@ shl,Arithmetic & Logic,Benchmarked
 freeze_ref,Local & References,Missing
 move_to,Structs & Resources,Missing
 move_from,Structs & Resources,Missing
-imm_borrow_global,Structs & Resources,Missing
+imm_borrow_global,Structs & Resources,Benchmarked
 mut_borrow_global,Structs & Resources,Benchmarked
 exists,Structs & Resources,Missing
 nop,Stack & Control,Missing
@@ -81,11 +81,11 @@ or,Arithmetic & Logic,Missing
 xor,Arithmetic & Logic,Benchmarked
 bit_and,Arithmetic & Logic,Benchmarked
 bit_or,Arithmetic & Logic,Benchmarked
-write_ref,Local & References,Missing
+write_ref,Local & References,Benchmarked
 unpack,Structs & Resources,Missing
 pack,Structs & Resources,Benchmarked
-imm_borrow_field,Structs & Resources,Missing
-mut_borrow_field,Structs & Resources,Missing
+imm_borrow_field,Structs & Resources,Benchmarked
+mut_borrow_field,Structs & Resources,Benchmarked
 ld_false,Constant & Castings,Benchmarked
 ld_true,Constant & Castings,Benchmarked
 ld_const,Constant & Castings,Missing
