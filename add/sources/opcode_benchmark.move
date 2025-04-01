@@ -17,6 +17,12 @@ module address_move::opcode_benchmark {
         u256_cast_result: u256
     }
 
+    // Storage for boolean and constant literals
+    struct LiteralStorage has key {
+        false_val: bool,
+        true_val: bool
+    }
+
     // Initialize storage for benchmarking
     public entry fun initialize(account: &signer) {
         if (!exists<Storage>(signer::address_of(account))) {
@@ -34,6 +40,13 @@ module address_move::opcode_benchmark {
                 u64_cast_result: 0,
                 u128_cast_result: 0,
                 u256_cast_result: 0
+            });
+        };
+        
+        if (!exists<LiteralStorage>(signer::address_of(account))) {
+            move_to(account, LiteralStorage {
+                false_val: false,  // ld_false opcode
+                true_val: true    // ld_true opcode
             });
         }
     }
@@ -219,5 +232,49 @@ module address_move::opcode_benchmark {
         let _load_u64 = b_u64;
         let _load_u128 = b_u128;
         let _load_u256 = b_u256;
+    }
+
+    // Benchmark for ld_false, ld_true, and ld_const opcodes (with parameters)
+    public entry fun benchmark_constant_loads(
+        _account: &signer, 
+        false_val: bool, 
+        true_val: bool,
+        const_u8: u8,
+        const_u16: u16,
+        const_u32: u32,
+        const_u64: u64,
+        const_u128: u128,
+        const_u256: u256
+    ) {
+        // Use the values in a basic calculation to prevent compiler optimization
+        let _result_1 = if (false_val) { 1 } else { 0 };
+        let _result_2 = if (true_val) { 1 } else { 0 };
+        
+        let _sum = const_u8 + (const_u16 as u8) + (const_u32 as u8) + 
+                  (const_u64 as u8) + (const_u128 as u8) + (const_u256 as u8);
+    }
+
+    // Benchmark for ld_false, ld_true, and ld_const opcodes (with literal constants)
+    public entry fun benchmark_constant_literals(_account: &signer) {
+        // ld_false opcode - explicitly using the false literal constant
+        let _false_val = false;
+        
+        // ld_true opcode - explicitly using the true literal constant
+        let _true_val = true;
+        
+        // ld_const opcode - explicitly using literal numeric constants
+        let _const_u8: u8 = 42;
+        let _const_u16: u16 = 1000;
+        let _const_u32: u32 = 100000;
+        let _const_u64: u64 = 10000000;
+        let _const_u128: u128 = 10000000000;
+        let _const_u256: u256 = 10000000000000;
+        
+        // Use the values in a basic calculation to prevent compiler optimization
+        let _result_1 = if (_false_val) { 1 } else { 0 };
+        let _result_2 = if (_true_val) { 1 } else { 0 };
+        
+        let _sum = _const_u8 + (_const_u16 as u8) + (_const_u32 as u8) + 
+                  (_const_u64 as u8) + (_const_u128 as u8) + (_const_u256 as u8);
     }
 } 

@@ -54,6 +54,8 @@ declare -a BENCHMARK_CONFIGS=(
     "benchmark_boolean_ops|bool:true|bool:false"
     "benchmark_bit_shift|u8:10|u8:3"
     "benchmark_casting|u8:10|u16:1000|u32:100000|u64:10000000|u128:10000000000|u256:1000000000000"
+    "benchmark_constant_loads|bool:false|bool:true|u8:42|u16:1000|u32:100000|u64:10000000|u128:10000000000|u256:1000000000000"
+    "benchmark_constant_literals"
 )
 
 # Clear previous gas profiling results

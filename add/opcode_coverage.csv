@@ -86,6 +86,6 @@ unpack,Structs & Resources,Missing
 pack,Structs & Resources,Benchmarked
 imm_borrow_field,Structs & Resources,Missing
 mut_borrow_field,Structs & Resources,Missing
-ld_false,Constant & Castings,Missing
-ld_true,Constant & Castings,Missing
+ld_false,Constant & Castings,Benchmarked
+ld_true,Constant & Castings,Benchmarked
 ld_const,Constant & Castings,Missing
