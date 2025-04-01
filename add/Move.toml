@@ -1,5 +1,5 @@
 [package]
-name = "add_move_benchmark"
+name = "opcode_benchmark"
 version = "1.0.0"
 authors = []
 
@@ -8,5 +8,9 @@ address_move = "_"
 
 [dev-addresses]
 
-[dependencies]
-AptosFramework = { local = "/Users/shgh/Work/master-thesis/aptos-core/aptos-move/framework/aptos-framework" }
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-framework.git"
+rev = "mainnet"
+subdir = "aptos-framework"
+
+[dev-dependencies]

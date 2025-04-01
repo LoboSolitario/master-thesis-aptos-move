@@ -1,0 +1,91 @@
+Opcode,Type,Status
+vec_pop_back,,Benchmarked
+vec_imm_borrow,,Benchmarked
+move_to_generic,Structs & Resources,Benchmarked
+mut_borrow_global_generic,Structs & Resources,Missing
+cast_u8,Constant & Castings,Benchmarked
+gt,Arithmetic & Logic,Benchmarked
+lt,Arithmetic & Logic,Benchmarked
+div,Arithmetic & Logic,Benchmarked
+mod,Arithmetic & Logic,Benchmarked
+mul,Arithmetic & Logic,Benchmarked
+sub,Arithmetic & Logic,Benchmarked
+add,Arithmetic & Logic,Benchmarked
+read_ref,Local & References,Benchmarked
+call,Stack & Control,Benchmarked
+imm_borrow_loc,Local & References,Benchmarked
+mut_borrow_loc,Local & References,Benchmarked
+st_loc,Local & References,Benchmarked
+move_loc,Local & References,Benchmarked
+copy_loc,Local & References,Benchmarked
+ld_u64,Constant & Castings,Benchmarked
+branch,Stack & Control,Benchmarked
+br_false,Stack & Control,Benchmarked
+br_true,Stack & Control,Benchmarked
+ret,Stack & Control,Benchmarked
+pop,Stack & Control,Benchmarked
+call_closure,,Missing
+pack_closure,,Missing
+pack_closure_generic,,Missing
+test_variant_generic,,Missing
+unpack_variant_generic,,Missing
+test_variant,,Missing
+unpack_variant,,Missing
+pack_variant,,Missing
+pack_variant_generic,,Missing
+mut_borrow_variant_field_generic,,Missing
+imm_borrow_variant_field_generic,,Missing
+mut_borrow_variant_field,,Missing
+imm_borrow_variant_field,,Missing
+cast_u256,,Benchmarked
+cast_u32,,Benchmarked
+cast_u16,,Benchmarked
+ld_u256,,Benchmarked
+ld_u32,,Benchmarked
+vec_swap,,Missing
+ld_u16,,Benchmarked
+vec_unpack,,Missing
+vec_push_back,,Benchmarked
+vec_mut_borrow,,Missing
+vec_pack,,Benchmarked
+vec_len,,Benchmarked
+move_from_generic,Structs & Resources,Missing
+imm_borrow_global_generic,Structs & Resources,Missing
+exists_generic,Structs & Resources,Benchmarked
+unpack_generic,Structs & Resources,Missing
+call_generic,Stack & Control,Missing
+pack_generic,Structs & Resources,Missing
+imm_borrow_field_generic,Structs & Resources,Missing
+mut_borrow_field_generic,Structs & Resources,Missing
+cast_u128,Constant & Castings,Benchmarked
+cast_u64,Constant & Castings,Benchmarked
+ld_u128,Constant & Castings,Benchmarked
+shr,Arithmetic & Logic,Benchmarked
+ld_u8,Constant & Castings,Benchmarked
+shl,Arithmetic & Logic,Benchmarked
+freeze_ref,Local & References,Missing
+move_to,Structs & Resources,Missing
+move_from,Structs & Resources,Missing
+imm_borrow_global,Structs & Resources,Missing
+mut_borrow_global,Structs & Resources,Benchmarked
+exists,Structs & Resources,Missing
+nop,Stack & Control,Missing
+abort,Stack & Control,Missing
+ge,Arithmetic & Logic,Benchmarked
+le,Arithmetic & Logic,Benchmarked
+neq,Arithmetic & Logic,Benchmarked
+eq,Arithmetic & Logic,Benchmarked
+not,Arithmetic & Logic,Benchmarked
+and,Arithmetic & Logic,Missing
+or,Arithmetic & Logic,Missing
+xor,Arithmetic & Logic,Benchmarked
+bit_and,Arithmetic & Logic,Benchmarked
+bit_or,Arithmetic & Logic,Benchmarked
+write_ref,Local & References,Missing
+unpack,Structs & Resources,Missing
+pack,Structs & Resources,Benchmarked
+imm_borrow_field,Structs & Resources,Missing
+mut_borrow_field,Structs & Resources,Missing
+ld_false,Constant & Castings,Missing
+ld_true,Constant & Castings,Missing
+ld_const,Constant & Castings,Missing
