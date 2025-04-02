@@ -1,0 +1,444 @@
+<!-- Copyright © Aptos Foundation -->
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas Report - 0xc3c2-opcode_benchmark-initialize</title>
+    <style>
+        /* Add your custom CSS styles here */
+        body {
+            background-color: white;
+            color: black;
+        }
+
+        section {
+            margin-bottom: 60px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
+
+        td {
+            padding: 2px;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        h2 {
+            background: rgb(220, 220, 220);
+        }
+
+        h3 {
+            background: rgb(240, 240, 240);
+        }
+
+        .flamegraph {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body onload="init();">
+    <header>
+        <h1>Gas Report - 0xc3c2-opcode_benchmark-initialize</h1>
+    </header>
+
+    <section>
+        <h2>Flamegraphs</h2>
+        <object data="assets/exec_io.svg" type="image/svg+xml" class="flamegraph"></object>
+
+        <object data="assets/storage.svg" type="image/svg+xml" class="flamegraph"></object>
+    </section>
+
+    <section>
+        <h2>Cost Break-down</h2>
+        The Aptos network charges a transaction in two parts: (1) execution and IO, and (2) storage.
+
+        <h3> Execution & IO</h3>
+        The execution & IO costs cover the transient resources used for executing the transaction
+        and are quantified in gas units, meaning that the final fee incurred will be subject to the gas unit
+        price established by the gas fee market. This allows one to benefit from low transaction fees when
+        the network is not at capacity.
+
+        <h4>Intrinsic Cost</h4>
+        2.76 gas units
+        , 59.19% of the total cost for execution & IO.
+
+
+        <h4>Dependencies</h4>
+        <table>
+            <tr>
+                <th><b>Name</b></th>
+                <th style="text-align: right"><b>Size in Bytes</b></th>
+                <th style="text-align: right"><b>Cost in Gas Units</b></th>
+                <th style="text-align: right"><b>Percentage</b></th>
+            </tr>
+            <tr>
+                <td>0xc3c2..::opcode_benchmark</td>
+                <td style="text-align: right">3896</td>
+                <td style="text-align: right">0.238092</td>
+                <td style="text-align: right">5.11%</td>
+            </tr>
+        </table>
+        <h4>Execution</h4>
+        <table>
+            <tr>
+                <th><b>Operation</b></th>
+                <th style="text-align: right"><b>Number of Hits</b></th>
+                <th style="text-align: right"><b>Cost in Gas Units</b></th>
+                <th style="text-align: right"><b>Percentage</b></th>
+            </tr>
+            <tr>
+                <td>call</td>
+                <td style="text-align: right">2</td>
+                <td style="text-align: right">0.008453</td>
+                <td style="text-align: right">0.18%</td>
+            </tr>
+            <tr>
+                <td>move_to_generic</td>
+                <td style="text-align: right">4</td>
+                <td style="text-align: right">0.007352</td>
+                <td style="text-align: right">0.16%</td>
+            </tr>
+            <tr>
+                <td>copy_loc</td>
+                <td style="text-align: right">7</td>
+                <td style="text-align: right">0.005978</td>
+                <td style="text-align: right">0.13%</td>
+            </tr>
+            <tr>
+                <td>pack</td>
+                <td style="text-align: right">4</td>
+                <td style="text-align: right">0.004996</td>
+                <td style="text-align: right">0.11%</td>
+            </tr>
+            <tr>
+                <td>exists_generic</td>
+                <td style="text-align: right">4</td>
+                <td style="text-align: right">0.003676</td>
+                <td style="text-align: right">0.08%</td>
+            </tr>
+            <tr>
+                <td>create_ty</td>
+                <td style="text-align: right">4</td>
+                <td style="text-align: right">0.0024</td>
+                <td style="text-align: right">0.05%</td>
+            </tr>
+            <tr>
+                <td>vec_pack</td>
+                <td style="text-align: right">1</td>
+                <td style="text-align: right">0.002205</td>
+                <td style="text-align: right">0.05%</td>
+            </tr>
+            <tr>
+                <td>br_false</td>
+                <td style="text-align: right">3</td>
+                <td style="text-align: right">0.001323</td>
+                <td style="text-align: right">0.03%</td>
+            </tr>
+            <tr>
+                <td>move_loc</td>
+                <td style="text-align: right">3</td>
+                <td style="text-align: right">0.001323</td>
+                <td style="text-align: right">0.03%</td>
+            </tr>
+            <tr>
+                <td>read_ref</td>
+                <td style="text-align: right">1</td>
+                <td style="text-align: right">0.001295</td>
+                <td style="text-align: right">0.03%</td>
+            </tr>
+            <tr>
+                <td>ld_u64</td>
+                <td style="text-align: right">4</td>
+                <td style="text-align: right">0.00088</td>
+                <td style="text-align: right">0.02%</td>
+            </tr>
+            <tr>
+                <td>0x1::signer::borrow_address</td>
+                <td style="text-align: right">1</td>
+                <td style="text-align: right">0.000735</td>
+                <td style="text-align: right">0.02%</td>
+            </tr>
+            <tr>
+                <td>br_true</td>
+                <td style="text-align: right">1</td>
+                <td style="text-align: right">0.000441</td>
+                <td style="text-align: right">0.01%</td>
+            </tr>
+            <tr>
+                <td>st_loc</td>
+                <td style="text-align: right">1</td>
+                <td style="text-align: right">0.000441</td>
+                <td style="text-align: right">0.01%</td>
+            </tr>
+            <tr>
+                <td>ret</td>
+                <td style="text-align: right">2</td>
+                <td style="text-align: right">0.00044</td>
+                <td style="text-align: right">0.01%</td>
+            </tr>
+            <tr>
+                <td>ld_u128</td>
+                <td style="text-align: right">1</td>
+                <td style="text-align: right">0.000294</td>
+                <td style="text-align: right">0.01%</td>
+            </tr>
+            <tr>
+                <td>ld_u256</td>
+                <td style="text-align: right">1</td>
+                <td style="text-align: right">0.000294</td>
+                <td style="text-align: right">0.01%</td>
+            </tr>
+            <tr>
+                <td>ld_false</td>
+                <td style="text-align: right">1</td>
+                <td style="text-align: right">0.00022</td>
+                <td style="text-align: right">0.00%</td>
+            </tr>
+            <tr>
+                <td>ld_true</td>
+                <td style="text-align: right">1</td>
+                <td style="text-align: right">0.00022</td>
+                <td style="text-align: right">0.00%</td>
+            </tr>
+            <tr>
+                <td>ld_u16</td>
+                <td style="text-align: right">1</td>
+                <td style="text-align: right">0.00022</td>
+                <td style="text-align: right">0.00%</td>
+            </tr>
+            <tr>
+                <td>ld_u32</td>
+                <td style="text-align: right">1</td>
+                <td style="text-align: right">0.00022</td>
+                <td style="text-align: right">0.00%</td>
+            </tr>
+            <tr>
+                <td>ld_u8</td>
+                <td style="text-align: right">1</td>
+                <td style="text-align: right">0.00022</td>
+                <td style="text-align: right">0.00%</td>
+            </tr>
+        </table>
+        <h4>State Reads</h4>
+        <table>
+            <tr>
+                <td><b>Resource Name</b></td>
+                <td style="text-align: right"><b>Number of Hits</b></td>
+                <td style="text-align: right"><b>Cost in Gas Units</b></td>
+                <td style="text-align: right"><b>Percentage</b></td>
+            </tr>
+            <tr>
+                <td>0xc3c2a87b98a4db2dec669637a27b8dbbd2e4982beadfc423ac35c9a8f1b9f19a::opcode_benchmark::CastStorage</td>
+                <td style="text-align: right">1</td>
+                <td style="text-align: right">0.302385</td>
+                <td style="text-align: right">6.49%</td>
+            </tr>
+            <tr>
+                <td>0xc3c2a87b98a4db2dec669637a27b8dbbd2e4982beadfc423ac35c9a8f1b9f19a::opcode_benchmark::LiteralStorage</td>
+                <td style="text-align: right">1</td>
+                <td style="text-align: right">0.302385</td>
+                <td style="text-align: right">6.49%</td>
+            </tr>
+            <tr>
+                <td>0xc3c2a87b98a4db2dec669637a27b8dbbd2e4982beadfc423ac35c9a8f1b9f19a::opcode_benchmark::Storage</td>
+                <td style="text-align: right">1</td>
+                <td style="text-align: right">0.302385</td>
+                <td style="text-align: right">6.49%</td>
+            </tr>
+            <tr>
+                <td>0xc3c2a87b98a4db2dec669637a27b8dbbd2e4982beadfc423ac35c9a8f1b9f19a::opcode_benchmark::UnpackStruct</td>
+                <td style="text-align: right">1</td>
+                <td style="text-align: right">0.302385</td>
+                <td style="text-align: right">6.49%</td>
+            </tr>
+        </table>
+        <h4>Ledger Writes</h4>
+        <h5>Transaction Itself</h5>
+        <table>
+            <tr>
+                <td style="text-align: right"><b>Cost in Gas Units</b></td>
+                <td style="text-align: right"><b>Percentage</b></td>
+            </tr>
+            <tr>
+                <td style="text-align: right">0.011392</td>
+                <td style="text-align: right">0.24%</td>
+            </tr>
+        </table>
+        <h5>Events</h5>
+        (No writes to show.)
+        <h5>State Write Ops</h5>
+        <table>
+            <tr>
+                <td><b>Resource Name</b></td>
+                <td style="text-align: right"><b>Number of Hits</b></td>
+                <td style="text-align: right"><b>Cost in Gas Units</b></td>
+                <td style="text-align: right"><b>Percentage</b></td>
+            </tr>
+            <tr>
+                <td>0xc3c2a87b98a4db2dec669637a27b8dbbd2e4982beadfc423ac35c9a8f1b9f19a::opcode_benchmark::CastStorage</td>
+                <td style="text-align: right">1</td>
+                <td style="text-align: right">0.10363</td>
+                <td style="text-align: right">2.22%</td>
+            </tr>
+            <tr>
+                <td>0xc3c2a87b98a4db2dec669637a27b8dbbd2e4982beadfc423ac35c9a8f1b9f19a::opcode_benchmark::UnpackStruct</td>
+                <td style="text-align: right">1</td>
+                <td style="text-align: right">0.099536</td>
+                <td style="text-align: right">2.13%</td>
+            </tr>
+            <tr>
+                <td>0xc3c2a87b98a4db2dec669637a27b8dbbd2e4982beadfc423ac35c9a8f1b9f19a::opcode_benchmark::LiteralStorage</td>
+                <td style="text-align: right">1</td>
+                <td style="text-align: right">0.098468</td>
+                <td style="text-align: right">2.11%</td>
+            </tr>
+            <tr>
+                <td>0xc3c2a87b98a4db2dec669637a27b8dbbd2e4982beadfc423ac35c9a8f1b9f19a::opcode_benchmark::Storage</td>
+                <td style="text-align: right">1</td>
+                <td style="text-align: right">0.098468</td>
+                <td style="text-align: right">2.11%</td>
+            </tr>
+        </table>
+        <h3>Storage</h3>
+        The storage fees cover the extended-term storage of states and events and are assessed at a fixed price in APT.
+
+        <h4>Transaction</h4>
+        0 APT
+        , 0.00% of the total cost for storage.
+        <h4>States</h4>
+        <table>
+            <tr>
+                <td><b>Path</b></td>
+                <td style="text-align: right"><b>Cost in APT</b></td>
+                <td style="text-align: right"><b>Percentage</b></td>
+                <td style="text-align: right"><b>Refund in APT</b></td>
+                <td style="text-align: right"><b>Percentage</b></td>
+            </tr>
+            <tr>
+                <td>0xc3c2..::0xc3c2a87b98a4db2dec669637a27b8dbbd2e4982beadfc423ac35c9a8f1b9f19a::opcode_benchmark::CastStorage</td>
+                <td style="text-align: right">0.0004632</td>
+                <td style="text-align: right">25.91%</td>
+                <td style="text-align: right">/</td>
+                <td style="text-align: right">/</td>
+            </tr>
+            <tr>
+                <td>0xc3c2..::0xc3c2a87b98a4db2dec669637a27b8dbbd2e4982beadfc423ac35c9a8f1b9f19a::opcode_benchmark::UnpackStruct</td>
+                <td style="text-align: right">0.0004448</td>
+                <td style="text-align: right">24.88%</td>
+                <td style="text-align: right">/</td>
+                <td style="text-align: right">/</td>
+            </tr>
+            <tr>
+                <td>0xc3c2..::0xc3c2a87b98a4db2dec669637a27b8dbbd2e4982beadfc423ac35c9a8f1b9f19a::opcode_benchmark::Storage</td>
+                <td style="text-align: right">0.00044</td>
+                <td style="text-align: right">24.61%</td>
+                <td style="text-align: right">/</td>
+                <td style="text-align: right">/</td>
+            </tr>
+            <tr>
+                <td>0xc3c2..::0xc3c2a87b98a4db2dec669637a27b8dbbd2e4982beadfc423ac35c9a8f1b9f19a::opcode_benchmark::LiteralStorage</td>
+                <td style="text-align: right">0.00044</td>
+                <td style="text-align: right">24.61%</td>
+                <td style="text-align: right">/</td>
+                <td style="text-align: right">/</td>
+            </tr>
+        </table>
+        <h4>Events</h4>
+        (No events to show.)
+    </section>
+
+    <section>
+        <h2>Full Execution Trace</h2>
+        <div>
+            <pre style="display: inline-block; border:1px solid black; padding: 2px;"><code>execution &amp; IO (gas unit, full trace)                                                                                                 4.662752    100.00%
+    intrinsic                                                                                                                         2.76        59.19%
+    keyless                                                                                                                                       
+    dependencies                                                                                                                      0.238092    5.11%
+        0xc3c2..::opcode_benchmark                                                                                                    0.238092    5.11%
+    0xc3c2..::opcode_benchmark::initialize                                                                                            1.253166    26.88%
+        create_ty                                                                                                                     0.0008      0.02%
+        create_ty                                                                                                                     0.0004      0.01%
+        copy_loc                                                                                                                      0.000854    0.02%
+        call                                                                                                                          0.00441     0.09%
+        0x1::signer::address_of                                                                                                       0.007534    0.16%
+            create_ty                                                                                                                 0.0008      0.02%
+            move_loc                                                                                                                  0.000441    0.01%
+            call                                                                                                                      0.004043    0.09%
+            0x1::signer::borrow_address                                                                                               0.000735    0.02%
+            read_ref                                                                                                                  0.001295    0.03%
+            ret                                                                                                                       0.00022     0.00%
+        st_loc                                                                                                                        0.000441    0.01%
+        copy_loc                                                                                                                      0.000854    0.02%
+        load&lt;0xc3c2..::0xc3c2a87b98a4db2dec669637a27b8dbbd2e4982beadfc423ac35c9a8f1b9f19a::opcode_benchmark::Storage&gt;                 0.302385    6.49%
+        exists_generic                                                                                                                0.000919    0.02%
+        br_false                                                                                                                      0.000441    0.01%
+        @7                                                                                                                                        
+        copy_loc                                                                                                                      0.000854    0.02%
+        ld_u64                                                                                                                        0.00022     0.00%
+        create_ty                                                                                                                     0.0004      0.01%
+        vec_pack                                                                                                                      0.002205    0.05%
+        pack                                                                                                                          0.001102    0.02%
+        move_to_generic                                                                                                               0.001838    0.04%
+        copy_loc                                                                                                                      0.000854    0.02%
+        load&lt;0xc3c2..::0xc3c2a87b98a4db2dec669637a27b8dbbd2e4982beadfc423ac35c9a8f1b9f19a::opcode_benchmark::CastStorage&gt;             0.302385    6.49%
+        exists_generic                                                                                                                0.000919    0.02%
+        br_false                                                                                                                      0.000441    0.01%
+        @16                                                                                                                                       
+        copy_loc                                                                                                                      0.000854    0.02%
+        ld_u8                                                                                                                         0.00022     0.00%
+        ld_u16                                                                                                                        0.00022     0.00%
+        ld_u32                                                                                                                        0.00022     0.00%
+        ld_u64                                                                                                                        0.00022     0.00%
+        ld_u128                                                                                                                       0.000294    0.01%
+        ld_u256                                                                                                                       0.000294    0.01%
+        pack                                                                                                                          0.00169     0.04%
+        move_to_generic                                                                                                               0.001838    0.04%
+        copy_loc                                                                                                                      0.000854    0.02%
+        load&lt;0xc3c2..::0xc3c2a87b98a4db2dec669637a27b8dbbd2e4982beadfc423ac35c9a8f1b9f19a::opcode_benchmark::LiteralStorage&gt;          0.302385    6.49%
+        exists_generic                                                                                                                0.000919    0.02%
+        br_false                                                                                                                      0.000441    0.01%
+        @29                                                                                                                                       
+        copy_loc                                                                                                                      0.000854    0.02%
+        ld_false                                                                                                                      0.00022     0.00%
+        ld_true                                                                                                                       0.00022     0.00%
+        pack                                                                                                                          0.001102    0.02%
+        move_to_generic                                                                                                               0.001838    0.04%
+        move_loc                                                                                                                      0.000441    0.01%
+        load&lt;0xc3c2..::0xc3c2a87b98a4db2dec669637a27b8dbbd2e4982beadfc423ac35c9a8f1b9f19a::opcode_benchmark::UnpackStruct&gt;            0.302385    6.49%
+        exists_generic                                                                                                                0.000919    0.02%
+        br_true                                                                                                                       0.000441    0.01%
+        move_loc                                                                                                                      0.000441    0.01%
+        ld_u64                                                                                                                        0.00022     0.00%
+        ld_u64                                                                                                                        0.00022     0.00%
+        pack                                                                                                                          0.001102    0.02%
+        move_to_generic                                                                                                               0.001838    0.04%
+        ret                                                                                                                           0.00022     0.00%
+    ledger writes                                                                                                                     0.411494    8.83%
+        transaction                                                                                                                   0.011392    0.24%
+        events                                                                                                                                    
+        state write ops                                                                                                               0.400102    8.58%
+            create&lt;0xc3c2..::0xc3c2a87b98a4db2dec669637a27b8dbbd2e4982beadfc423ac35c9a8f1b9f19a::opcode_benchmark::Storage&gt;           0.098468    2.11%
+            create&lt;0xc3c2..::0xc3c2a87b98a4db2dec669637a27b8dbbd2e4982beadfc423ac35c9a8f1b9f19a::opcode_benchmark::CastStorage&gt;       0.10363     2.22%
+            create&lt;0xc3c2..::0xc3c2a87b98a4db2dec669637a27b8dbbd2e4982beadfc423ac35c9a8f1b9f19a::opcode_benchmark::UnpackStruct&gt;      0.099536    2.13%
+            create&lt;0xc3c2..::0xc3c2a87b98a4db2dec669637a27b8dbbd2e4982beadfc423ac35c9a8f1b9f19a::opcode_benchmark::LiteralStorage&gt;    0.098468    2.11%
+</code></pre>
+        </div>
+    </section>
+
+    <footer>
+        <p>Generated by the Aptos Gas Profiler</p>
+    </footer>
+</body>
+
+</html>

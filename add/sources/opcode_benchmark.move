@@ -104,6 +104,102 @@ module address_move::opcode_benchmark {
         let _elem = vector::borrow(&vec, 0);
     }
 
+    // Vector Unpack Benchmark
+    public entry fun benchmark_vec_unpack(_account: &signer) {
+        // Create a vector
+        let vec = vector::empty<u64>();
+        vector::push_back(&mut vec, 10);
+        vector::push_back(&mut vec, 20);
+        vector::push_back(&mut vec, 30);
+        
+        // Unpack vector
+        // Note: In Move, vector unpacking is done via vector::destroy and vector iteration
+        let (first, rest) = vector_pop_front(vec);
+        let _first_value = first;
+        
+        let (second, rest) = vector_pop_front(rest);
+        let _second_value = second;
+        
+        let (third, rest) = vector_pop_front(rest);
+        let _third_value = third;
+        
+        // Ensure the vector is empty
+        assert!(vector::length(&rest) == 0, 1000);
+        vector::destroy_empty(rest);
+    }
+    
+    // Helper function to simulate popping from the front of a vector (for vec_unpack benchmark)
+    fun vector_pop_front<T: copy + drop>(vec: vector<T>): (T, vector<T>) {
+        let len = vector::length(&vec);
+        assert!(len > 0, 1001);
+        
+        let front_element = *vector::borrow(&vec, 0);
+        let rest = vector::empty<T>();
+        
+        let i = 1;
+        while (i < len) {
+            vector::push_back(&mut rest, *vector::borrow(&vec, i));
+            i = i + 1;
+        };
+        
+        (front_element, rest)
+    }
+    
+    // Vector Swap Benchmark
+    public entry fun benchmark_vec_swap(_account: &signer) {
+        // Create a vector
+        let vec = vector::empty<u64>();
+        vector::push_back(&mut vec, 10);
+        vector::push_back(&mut vec, 20);
+        vector::push_back(&mut vec, 30);
+        vector::push_back(&mut vec, 40);
+        
+        // Swap elements at different positions
+        vector::swap(&mut vec, 0, 3); // Swap first and last
+        assert!(*vector::borrow(&vec, 0) == 40, 1002);
+        assert!(*vector::borrow(&vec, 3) == 10, 1003);
+        
+        vector::swap(&mut vec, 1, 2); // Swap middle elements
+        assert!(*vector::borrow(&vec, 1) == 30, 1004);
+        assert!(*vector::borrow(&vec, 2) == 20, 1005);
+        
+        // Swap back
+        vector::swap(&mut vec, 0, 3);
+        vector::swap(&mut vec, 1, 2);
+    }
+    
+    // Vector Mutable Borrow Benchmark
+    public entry fun benchmark_vec_mut_borrow(_account: &signer) {
+        // Create a vector
+        let vec = vector::empty<u64>();
+        vector::push_back(&mut vec, 100);
+        vector::push_back(&mut vec, 200);
+        vector::push_back(&mut vec, 300);
+        
+        // Mutably borrow and modify elements
+        let elem_ref = vector::borrow_mut(&mut vec, 0);
+        *elem_ref = *elem_ref + 1; // 100 -> 101
+        
+        let elem_ref = vector::borrow_mut(&mut vec, 1);
+        *elem_ref = *elem_ref + 2; // 200 -> 202
+        
+        let elem_ref = vector::borrow_mut(&mut vec, 2);
+        *elem_ref = *elem_ref + 3; // 300 -> 303
+        
+        // Verify modifications
+        assert!(*vector::borrow(&vec, 0) == 101, 1006);
+        assert!(*vector::borrow(&vec, 1) == 202, 1007);
+        assert!(*vector::borrow(&vec, 2) == 303, 1008);
+        
+        // Multiple mutable borrows in sequence (not simultaneously)
+        let iter = 0;
+        while (iter < vector::length(&vec)) {
+            let elem_ref = vector::borrow_mut(&mut vec, iter);
+            *elem_ref = *elem_ref * 2; // Double each element
+            iter = iter + 1;
+        };
+    }
+
     // Storage Operations Benchmark
     public entry fun benchmark_storage_ops(_account: &signer) acquires Storage {
         let addr = signer::address_of(_account);

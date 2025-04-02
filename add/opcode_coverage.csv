@@ -42,9 +42,9 @@ cast_u32,,Benchmarked
 cast_u16,,Benchmarked
 ld_u256,,Benchmarked
 ld_u32,,Benchmarked
-vec_swap,,Missing
+vec_swap,,Benchmarked
 ld_u16,,Benchmarked
-vec_unpack,,Missing
+vec_unpack,,Benchmarked
 vec_push_back,,Benchmarked
 vec_mut_borrow,,Missing
 vec_pack,,Benchmarked
@@ -53,7 +53,7 @@ move_from_generic,Structs & Resources,Missing
 imm_borrow_global_generic,Structs & Resources,Benchmarked
 exists_generic,Structs & Resources,Benchmarked
 unpack_generic,Structs & Resources,Missing
-call_generic,Stack & Control,Missing
+call_generic,Stack & Control,Benchmarked
 pack_generic,Structs & Resources,Missing
 imm_borrow_field_generic,Structs & Resources,Benchmarked
 mut_borrow_field_generic,Structs & Resources,Benchmarked
