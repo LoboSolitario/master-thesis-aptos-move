@@ -54,6 +54,16 @@ declare -a BENCHMARK_CONFIGS=(
     "benchmark_bit_shift|u8:10|u8:3"
     "benchmark_casting|u8:10|u16:1000|u32:100000|u64:10000000|u128:10000000000|u256:1000000000000"
     "benchmark_unpack_ref_global"
+    "benchmark_exists"
+    "benchmark_move_to"
+    "benchmark_move_from"
+    "benchmark_imm_borrow_field_generic"
+    "benchmark_mut_borrow_field_generic"
+    "benchmark_imm_borrow_global_generic"
+    "benchmark_mut_borrow_global_generic"
+    "benchmark_pack_generic"
+    "benchmark_unpack"
+    "benchmark_unpack_generic"
 )
 
 # Clear previous gas profiling results

@@ -29,6 +29,11 @@ module address_move::opcode_benchmark {
         true_val: bool
     }
 
+    // Generic struct for testing generic operations
+    struct GenericStruct<T: store + drop> has key, store, drop {
+        value: T
+    }
+
     // Initialize storage for benchmarking
     public entry fun initialize(account: &signer) {
         let addr = signer::address_of(account);
@@ -177,7 +182,6 @@ module address_move::opcode_benchmark {
         let _bit_xor_result = c ^ d;
     }
     
-    
     // Benchmark bit shift operations
     public entry fun benchmark_bit_shift(_account: &signer, a: u8, b: u8) {
         // Shift left (<<)
@@ -309,5 +313,149 @@ module address_move::opcode_benchmark {
             let UnpackStruct { f: f2, g: g2 } = s_ref;
             let _sum = *f2 + *g2;
         };
+    }
+
+    // Benchmark for exists opcode
+    public entry fun benchmark_exists(account: &signer) {
+        let addr = signer::address_of(account);
+        
+        // Check if resources exist - uses 'exists' opcode
+        let _storage_exists = exists<Storage>(addr);
+        let _unpack_struct_exists = exists<UnpackStruct>(addr);
+        let _cast_storage_exists = exists<CastStorage>(addr);
+        let _literal_storage_exists = exists<LiteralStorage>(addr);
+        
+        // Use exists in a control flow to ensure the code is actually executed
+        if (exists<Storage>(addr)) {
+            // Do something trivial
+            let _dummy = 1 + 1;
+        };
+    }
+    
+    // Benchmark for move_to opcode
+    public entry fun benchmark_move_to(account: &signer) {
+        let addr = signer::address_of(account);
+        
+        // Only perform move_to if the resource doesn't already exist
+        if (!exists<GenericStruct<u64>>(addr)) {
+            // Create a new struct and move it to account's storage
+            let generic_struct = GenericStruct<u64> { value: 100 };
+            move_to(account, generic_struct); // move_to opcode
+        }
+    }
+    
+    // Benchmark for move_from and move_from_generic opcodes
+    public entry fun benchmark_move_from(account: &signer) acquires GenericStruct {
+        let addr = signer::address_of(account);
+        
+        // First ensure the resource exists
+        if (!exists<GenericStruct<u64>>(addr)) {
+            move_to(account, GenericStruct<u64> { value: 100 });
+        };
+        
+        // Move the resource from global storage - uses move_from_generic opcode
+        let generic_struct = move_from<GenericStruct<u64>>(addr);
+        
+        // Use the resource
+        let _value = generic_struct.value;
+        
+        // Move it back to maintain state for future benchmarks
+        move_to(account, generic_struct);
+    }
+    
+    // Benchmark for imm_borrow_field_generic opcode
+    public entry fun benchmark_imm_borrow_field_generic() {
+        // Create a struct instance
+        let generic_struct = GenericStruct<u64> { value: 200 };
+        
+        // Immutably borrow a field from the struct - uses imm_borrow_field_generic
+        let value_ref = &generic_struct.value;
+        
+        // Use the reference
+        let _value = *value_ref;
+        
+        // Use the struct to avoid the drop issue
+        let _original_value = generic_struct.value;
+    }
+    
+    // Benchmark for mut_borrow_field_generic opcode
+    public entry fun benchmark_mut_borrow_field_generic() {
+        // Create a struct instance
+        let generic_struct = GenericStruct<u64> { value: 300 };
+        
+        // Mutably borrow a field from the struct - uses mut_borrow_field_generic
+        let value_ref = &mut generic_struct.value;
+        
+        // Modify the field through the reference
+        *value_ref = *value_ref + 1;
+        
+        // Use the modified struct - no longer a borrowing issue because we added drop
+        let _value = generic_struct.value;
+    }
+    
+    // Benchmark for imm_borrow_global_generic opcode
+    public entry fun benchmark_imm_borrow_global_generic(account: &signer) acquires GenericStruct {
+        let addr = signer::address_of(account);
+        
+        // Ensure the resource exists
+        if (!exists<GenericStruct<u64>>(addr)) {
+            move_to(account, GenericStruct<u64> { value: 400 });
+        };
+        
+        // Immutably borrow the resource from global storage - uses imm_borrow_global_generic
+        let generic_struct_ref = borrow_global<GenericStruct<u64>>(addr);
+        
+        // Use the reference
+        let _value = generic_struct_ref.value;
+    }
+    
+    // Benchmark for mut_borrow_global_generic opcode
+    public entry fun benchmark_mut_borrow_global_generic(account: &signer) acquires GenericStruct {
+        let addr = signer::address_of(account);
+        
+        // Ensure the resource exists
+        if (!exists<GenericStruct<u64>>(addr)) {
+            move_to(account, GenericStruct<u64> { value: 500 });
+        };
+        
+        // Mutably borrow the resource from global storage - uses mut_borrow_global_generic
+        let generic_struct_ref = borrow_global_mut<GenericStruct<u64>>(addr);
+        
+        // Modify the resource through the reference
+        generic_struct_ref.value = generic_struct_ref.value + 1;
+    }
+    
+    // Benchmark for pack_generic opcode
+    public entry fun benchmark_pack_generic() {
+        // Create instances of the generic struct with different types
+        // Each creation uses the pack_generic opcode
+        // Now with drop ability, these can be implicitly dropped
+        let _generic_u64 = GenericStruct<u64> { value: 600 };
+        let _generic_u128 = GenericStruct<u128> { value: 600u128 };
+        let _generic_bool = GenericStruct<bool> { value: true };
+    }
+    
+    // Benchmark for unpack opcode
+    public entry fun benchmark_unpack() {
+        // Create a struct
+        let unpack_struct = UnpackStruct { f: 700, g: 800 };
+        
+        // Destructure the struct using pattern matching - uses unpack opcode
+        let UnpackStruct { f, g } = unpack_struct;
+        
+        // Use the unpacked values
+        let _sum = f + g;
+    }
+    
+    // Benchmark for unpack_generic opcode
+    public entry fun benchmark_unpack_generic() {
+        // Create a generic struct
+        let generic_struct = GenericStruct<u64> { value: 900 };
+        
+        // Destructure the generic struct - uses unpack_generic opcode
+        let GenericStruct { value } = generic_struct;
+        
+        // Use the unpacked value
+        let _value_plus_one = value + 1;
     }
 } 

@@ -2,7 +2,7 @@ Opcode,Type,Status
 vec_pop_back,,Benchmarked
 vec_imm_borrow,,Benchmarked
 move_to_generic,Structs & Resources,Benchmarked
-mut_borrow_global_generic,Structs & Resources,Missing
+mut_borrow_global_generic,Structs & Resources,Benchmarked
 cast_u8,Constant & Castings,Benchmarked
 gt,Arithmetic & Logic,Benchmarked
 lt,Arithmetic & Logic,Benchmarked
@@ -50,13 +50,13 @@ vec_mut_borrow,,Missing
 vec_pack,,Benchmarked
 vec_len,,Benchmarked
 move_from_generic,Structs & Resources,Missing
-imm_borrow_global_generic,Structs & Resources,Missing
+imm_borrow_global_generic,Structs & Resources,Benchmarked
 exists_generic,Structs & Resources,Benchmarked
 unpack_generic,Structs & Resources,Missing
 call_generic,Stack & Control,Missing
 pack_generic,Structs & Resources,Missing
-imm_borrow_field_generic,Structs & Resources,Missing
-mut_borrow_field_generic,Structs & Resources,Missing
+imm_borrow_field_generic,Structs & Resources,Benchmarked
+mut_borrow_field_generic,Structs & Resources,Benchmarked
 cast_u128,Constant & Castings,Benchmarked
 cast_u64,Constant & Castings,Benchmarked
 ld_u128,Constant & Castings,Benchmarked
@@ -64,25 +64,22 @@ shr,Arithmetic & Logic,Benchmarked
 ld_u8,Constant & Castings,Benchmarked
 shl,Arithmetic & Logic,Benchmarked
 freeze_ref,Local & References,Missing
-move_to,Structs & Resources,Missing
-move_from,Structs & Resources,Missing
+move_to,Structs & Resources,Benchmarked
+move_from,Structs & Resources,Benchmarked
 imm_borrow_global,Structs & Resources,Benchmarked
 mut_borrow_global,Structs & Resources,Benchmarked
-exists,Structs & Resources,Missing
+exists,Structs & Resources,Benchmarked
 nop,Stack & Control,Missing
 abort,Stack & Control,Missing
 ge,Arithmetic & Logic,Benchmarked
 le,Arithmetic & Logic,Benchmarked
 neq,Arithmetic & Logic,Benchmarked
 eq,Arithmetic & Logic,Benchmarked
-not,Arithmetic & Logic,Benchmarked
-and,Arithmetic & Logic,Missing
-or,Arithmetic & Logic,Missing
 xor,Arithmetic & Logic,Benchmarked
 bit_and,Arithmetic & Logic,Benchmarked
 bit_or,Arithmetic & Logic,Benchmarked
 write_ref,Local & References,Benchmarked
-unpack,Structs & Resources,Missing
+unpack,Structs & Resources,Benchmarked
 pack,Structs & Resources,Benchmarked
 imm_borrow_field,Structs & Resources,Benchmarked
 mut_borrow_field,Structs & Resources,Benchmarked
