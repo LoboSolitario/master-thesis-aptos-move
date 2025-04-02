@@ -349,6 +349,24 @@ def generate_html_report(df, opcode_stats):
             const tableContainer = document.querySelector('#coverageTable').parentNode;
             tableContainer.insertBefore(searchInput, document.querySelector('#coverageTable'));
             tableContainer.insertBefore(filterDiv, document.querySelector('#coverageTable'));
+            
+            // Setup tabs for opcode group details
+            const tabButtons = document.querySelectorAll('.nav-tabs .nav-link');
+            const tabContents = document.querySelectorAll('.tab-pane');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.getAttribute('data-bs-target');
+                    
+                    // Deactivate all tab buttons and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active', 'show'));
+                    
+                    // Activate selected tab
+                    button.classList.add('active');
+                    document.querySelector(tabId).classList.add('active', 'show');
+                });
+            });
         });
     </script>
     """
@@ -374,6 +392,9 @@ def generate_html_report(df, opcode_stats):
                 height: 20px; 
                 border-radius: 10px;
                 background: linear-gradient(to right, #28a745 var(--coverage-pct), #dc3545 var(--coverage-pct)); 
+            }}
+            .tabs-container .nav-link {{
+                cursor: pointer;
             }}
         </style>
     </head>
@@ -431,6 +452,34 @@ def generate_html_report(df, opcode_stats):
                         </div>
                         <div class="card-body">
                             <img src="data:image/png;base64,{plot_data['gas_distribution']}" class="plot-img" alt="Gas Distribution by Opcode">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Opcode Group Analysis</h2>
+            <div class="row">
+                {'<div class="col-md-6"><div class="card"><div class="card-header"><h3>Average Gas by Opcode Type</h3></div><div class="card-body"><img src="data:image/png;base64,' + plot_data.get('gas_by_type', '') + '" class="plot-img" alt="Average Gas by Opcode Type"></div></div></div>' if 'gas_by_type' in plot_data else ''}
+                {'<div class="col-md-6"><div class="card"><div class="card-header"><h3>Frequency by Opcode Type</h3></div><div class="card-body"><img src="data:image/png;base64,' + plot_data.get('count_by_type', '') + '" class="plot-img" alt="Frequency by Opcode Type"></div></div></div>' if 'count_by_type' in plot_data else ''}
+            </div>
+            
+            <div class="row">
+                {'<div class="col-12"><div class="card"><div class="card-header"><h3>Coverage by Opcode Type</h3></div><div class="card-body"><img src="data:image/png;base64,' + plot_data.get('coverage_by_type', '') + '" class="plot-img" alt="Coverage by Opcode Type"></div></div></div>' if 'coverage_by_type' in plot_data else ''}
+            </div>
+
+            <h2>Gas Usage by Opcode Type</h2>
+            <div class="card">
+                <div class="card-header">
+                    <h3>Gas Usage for Opcodes by Group</h3>
+                </div>
+                <div class="card-body">
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs" role="tablist">
+                            {generate_opcode_group_tabs(plot_data)}
+                        </ul>
+                        
+                        <div class="tab-content mt-3">
+                            {generate_opcode_group_content(plot_data)}
                         </div>
                     </div>
                 </div>
@@ -626,7 +675,205 @@ def create_visualizations(df, opcode_stats):
     plot_data['gas_distribution'] = base64.b64encode(buffer.getvalue()).decode('utf-8')
     plt.close()
     
+    # 4. Group-based visualizations
+    try:
+        # Load the opcode types from all_opcodes.csv
+        all_opcodes_path = Path('all_opcodes.csv')
+        if not all_opcodes_path.exists():
+            all_opcodes_path = Path('add/all_opcodes.csv')
+            
+        if all_opcodes_path.exists():
+            # Read the CSV with opcode types
+            opcode_types_df = pd.read_csv(all_opcodes_path)
+            
+            # Ensure the Opcode and Type columns exist
+            if 'Opcode' in opcode_types_df.columns and 'Type' in opcode_types_df.columns:
+                # Convert opcodes to lowercase for consistent comparison
+                opcode_types_df['Opcode'] = opcode_types_df['Opcode'].str.lower()
+                
+                # Create mapping of opcode to type
+                opcode_to_type = dict(zip(opcode_types_df['Opcode'].str.lower(), opcode_types_df['Type']))
+                
+                # Add type to opcode_stats
+                opcode_stats['type'] = opcode_stats.index.map(lambda x: opcode_to_type.get(x.lower(), 'Unknown'))
+                
+                # 4.1 Average gas by opcode type
+                plt.figure(figsize=(10, 6))
+                type_gas = opcode_stats.groupby('type')['mean'].mean().sort_values(ascending=False)
+                ax = sns.barplot(x=type_gas.index, y=type_gas.values, palette='viridis')
+                plt.title('Average Gas Cost by Opcode Type')
+                plt.xlabel('Opcode Type')
+                plt.ylabel('Average Gas Units')
+                plt.xticks(rotation=45, ha='right')
+                plt.tight_layout()
+                buffer = BytesIO()
+                plt.savefig(buffer, format='png', dpi=100)
+                buffer.seek(0)
+                plot_data['gas_by_type'] = base64.b64encode(buffer.getvalue()).decode('utf-8')
+                plt.close()
+                
+                # 4.2 Count by opcode type
+                plt.figure(figsize=(10, 6))
+                type_count = opcode_stats.groupby('type')['count'].sum().sort_values(ascending=False)
+                ax = sns.barplot(x=type_count.index, y=type_count.values, palette='mako')
+                plt.title('Frequency of Opcodes by Type')
+                plt.xlabel('Opcode Type')
+                plt.ylabel('Count')
+                plt.xticks(rotation=45, ha='right')
+                plt.tight_layout()
+                buffer = BytesIO()
+                plt.savefig(buffer, format='png', dpi=100)
+                buffer.seek(0)
+                plot_data['count_by_type'] = base64.b64encode(buffer.getvalue()).decode('utf-8')
+                plt.close()
+                
+                # 4.3 Coverage by opcode type
+                plt.figure(figsize=(10, 6))
+                
+                # Load coverage data if available
+                coverage_path = Path('opcode_coverage.csv')
+                if coverage_path.exists():
+                    coverage_df = pd.read_csv(coverage_path)
+                    coverage_df['Opcode'] = coverage_df['Opcode'].str.lower()
+                    
+                    # Merge with type information
+                    coverage_df['Type'] = coverage_df['Opcode'].map(opcode_to_type)
+                    
+                    # Group by type and status
+                    type_coverage = coverage_df.groupby(['Type', 'Status']).size().unstack(fill_value=0)
+                    
+                    if 'Benchmarked' in type_coverage.columns and 'Missing' in type_coverage.columns:
+                        # Calculate coverage percentage
+                        type_coverage['Total'] = type_coverage['Benchmarked'] + type_coverage['Missing']
+                        type_coverage['Percentage'] = (type_coverage['Benchmarked'] / type_coverage['Total']) * 100
+                        
+                        # Sort by percentage
+                        type_coverage = type_coverage.sort_values('Percentage', ascending=False)
+                        
+                        # Plot
+                        ax = sns.barplot(x=type_coverage.index, y=type_coverage['Percentage'], palette='RdYlGn')
+                        plt.title('Coverage Percentage by Opcode Type')
+                        plt.xlabel('Opcode Type')
+                        plt.ylabel('Coverage (%)')
+                        plt.xticks(rotation=45, ha='right')
+                        
+                        # Add count labels
+                        for i, (_, row) in enumerate(type_coverage.iterrows()):
+                            plt.text(i, row['Percentage'] + 2, 
+                                    f"{row['Benchmarked']}/{row['Total']}", 
+                                    ha='center', va='bottom', fontsize=9)
+                        
+                        plt.ylim(0, 110)  # Give space for labels
+                        plt.tight_layout()
+                        buffer = BytesIO()
+                        plt.savefig(buffer, format='png', dpi=100)
+                        buffer.seek(0)
+                        plot_data['coverage_by_type'] = base64.b64encode(buffer.getvalue()).decode('utf-8')
+                        plt.close()
+                
+                # 4.4 Gas usage for opcodes within each group
+                # Get a list of opcode types that have at least one benchmarked opcode
+                types_with_benchmarks = opcode_stats[~opcode_stats['type'].isnull() & 
+                                              (opcode_stats['type'] != 'Unknown')]['type'].unique()
+                
+                # For each type, create a graph showing gas usage for its opcodes
+                for opcode_type in types_with_benchmarks:
+                    # Get opcodes for this type
+                    type_opcodes = opcode_stats[opcode_stats['type'] == opcode_type]
+                    
+                    # Skip if there are no or too few opcodes
+                    if len(type_opcodes) < 2:
+                        continue
+                    
+                    # Sort by mean gas
+                    type_opcodes_sorted = type_opcodes.sort_values('mean', ascending=False)
+                    
+                    # Create visualization (limit to top 15 for readability if needed)
+                    plt.figure(figsize=(12, 6))
+                    
+                    # Adjust figure height based on number of opcodes 
+                    fig_height = max(6, min(len(type_opcodes_sorted) * 0.4, 12))
+                    plt.figure(figsize=(10, fig_height))
+                    
+                    # Plot
+                    ax = sns.barplot(x='mean', y=type_opcodes_sorted.index, 
+                                data=type_opcodes_sorted, palette='viridis', orient='h')
+                    
+                    plt.title(f'Gas Cost for {opcode_type} Opcodes')
+                    plt.ylabel('Opcode')
+                    plt.xlabel('Average Gas Units')
+                    plt.tight_layout()
+                    
+                    # Add gas value labels 
+                    for i, v in enumerate(type_opcodes_sorted['mean']):
+                        ax.text(v + v*0.01, i, f"{v:.6f}", va='center')
+                    
+                    # Save
+                    buffer = BytesIO()
+                    plt.savefig(buffer, format='png', dpi=100)
+                    buffer.seek(0)
+                    plot_data[f'gas_by_{opcode_type.replace(" & ", "_").replace(" ", "_").lower()}'] = base64.b64encode(buffer.getvalue()).decode('utf-8')
+                    plt.close()
+    except Exception as e:
+        print(f"Error creating group-based visualizations: {e}")
+    
     return plot_data
+
+def generate_opcode_group_tabs(plot_data):
+    """Generate HTML tabs for opcode groups"""
+    tabs = []
+    
+    # Extract group names from plot_data keys
+    group_plots = [k for k in plot_data.keys() if k.startswith('gas_by_')]
+    
+    # If no group plots are available, return empty string
+    if not group_plots:
+        return ""
+    
+    # Add tabs for each group
+    for i, plot_key in enumerate(sorted(group_plots)):
+        # Extract group name from plot key
+        group_name = plot_key.replace('gas_by_', '')
+        # Beautify the name for display
+        display_name = group_name.replace('_', ' ').title().replace('And', '&')
+        
+        # Create tab
+        active_class = 'active' if i == 0 else ''
+        tabs.append(f"""
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {active_class}" id="tab-{group_name}" data-bs-toggle="tab" 
+                    data-bs-target="#content-{group_name}" type="button" role="tab">{display_name}</button>
+        </li>
+        """)
+    
+    return '\n'.join(tabs)
+
+def generate_opcode_group_content(plot_data):
+    """Generate HTML content for opcode group tabs"""
+    contents = []
+    
+    # Extract group names from plot_data keys
+    group_plots = [k for k in plot_data.keys() if k.startswith('gas_by_')]
+    
+    # If no group plots are available, return empty string
+    if not group_plots:
+        return "<div class='alert alert-info'>No opcode group data available</div>"
+    
+    # Add content for each group
+    for i, plot_key in enumerate(sorted(group_plots)):
+        # Extract group name from plot key
+        group_name = plot_key.replace('gas_by_', '')
+        
+        # Create content
+        active_class = 'active show' if i == 0 else ''
+        contents.append(f"""
+        <div class="tab-pane fade {active_class}" id="content-{group_name}" role="tabpanel">
+            <img src="data:image/png;base64,{plot_data[plot_key]}" class="plot-img" 
+                 alt="Gas usage for opcodes in {group_name}">
+        </div>
+        """)
+    
+    return '\n'.join(contents)
 
 if __name__ == "__main__":
     analyze_gas_profiling() 
